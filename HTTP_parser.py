@@ -1,6 +1,8 @@
 from bs4 import BeautifulSoup as bs
 import requests
 import re
+import pickle
+import json
 from datetime import datetime
 from news_class import News
 
@@ -29,3 +31,6 @@ for item in dev_search_item_js_tag:
 for i in range(len(news_list)):
     print(news_list[i])
     print('-' * 70)
+
+with open('news_list.data', 'wb') as f:
+   pickle.dump(news_list,f)
