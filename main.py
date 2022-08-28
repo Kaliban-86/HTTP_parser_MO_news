@@ -1,9 +1,12 @@
 import pickle
+import re
 
-with open('news_list.data', 'rb') as f:
-   file = pickle.load(f)
+# with open('news_list.data', 'rb') as f:
+#    file = pickle.load(f)
+#
+#
+# for i in range(len(file)):
+#     print(file[i])
+#     print()
 
 
-for i in range(len(file)):
-    print(file[i])
-    print()
