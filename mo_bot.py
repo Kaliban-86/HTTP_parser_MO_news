@@ -1,14 +1,87 @@
 import telebot
-from HTTP_parser import take_news_to_list
 from telebot import types
-from main import all_lessons
+from bs4 import BeautifulSoup as bs
+import requests
+import sqlite3
 import datetime
+
+
+
+conn = sqlite3.connect('studies.db')
+
+cursor = conn.cursor()
+
+cursor.execute('SELECT * from lessons')
+
+cursor.execute(
+    'select l.date, d.name, ct.class from lessons l, disciplines d, class_type ct where l.first_lesson = d.id and l.first_lesson_type = ct.id ')
+
+first_lesson_res = cursor.fetchall()
+
+cursor.execute(
+    'select l.date, d.name, ct.class from lessons l, disciplines d, class_type ct where l.second_lesson = d.id and l.second_lesson_type = ct.id')
+
+second_lesson_res = cursor.fetchall()
+
+cursor.execute(
+    'select l.date, d.name, ct.class from lessons l, disciplines d, class_type ct where l.third_lesson = d.id and l.third_lesson_type = ct.id')
+
+third_lesson_res = cursor.fetchall()
+
+sum_lessons_res = []
+
+
+def concat_lesson(first_lessons, second_lessons, third_lesson):
+    res_lessons = []
+
+    for k in range(len(first_lessons)):
+        if first_lessons[k][0] == second_lessons[k][0] == third_lesson[k][0]:
+            day_lessons = [first_lessons[k][0], str(first_lessons[k][1]) + ' (' + str(first_lessons[k][2]) + ')',
+                           str(second_lessons[k][1]) + ' (' + str(second_lessons[k][2]) + ')',
+                           str(third_lesson[k][1]) + ' (' + str(third_lesson[k][2]) + ')']
+            res_lessons.append(day_lessons)
+
+    return res_lessons
+
+all_lessons = concat_lesson(first_lesson_res, second_lesson_res, third_lesson_res)
+
+
+class News:
+    def __init__(self, title, categ_inf, url, cr_date):
+        self.news_title = title
+        self.news_url = url
+        self.news_categ = categ_inf
+        self.news_get_date = cr_date
+
+    def __str__(self):
+        return f'{self.news_title}\n{self.news_categ.lstrip().rstrip()}\n{self.news_url.lstrip()}\n{self.news_get_date}'
+
+
+def take_news_to_list():
+    url = 'https://www.rbc.ru/tags/?tag=%D0%9C%D0%B8%D0%BD%D0%BE%D0%B1%D0%BE%D1%80%D0%BE%D0%BD%D1%8B'
+    result = requests.get(url)
+    news_list = []
+    soup = bs(result.text, 'html.parser')
+    current_date = datetime.datetime.now()
+    l_row_tag = soup.find('div', class_='l-row g-overflow js-search-container')
+
+    dev_search_item_js_tag = l_row_tag.findAll('div', class_='search-item js-search-item')
+
+    for item in dev_search_item_js_tag:
+        item_title = item.find('span', class_='search-item__title').text
+        item_category = item.find('span', class_='search-item__category').text
+        item_url = item.a.get('href')
+        new_news = News(item_title, item_category, item_url, current_date)
+        news_list.append(new_news)
+
+    return news_list
+
 
 with open('token.txt', 'r') as f:
     token = f.read()
 
 bot = telebot.TeleBot(token)
-id_list = [1201776385, 0, 0]
+id_list = [1201776385]
 
 
 @bot.message_handler(commands=['start'])
@@ -91,7 +164,7 @@ def callback_inline(call):
 
         elif call.data == 'today':
             for i in lessons:
-                if curr_date == i[0]:
+                if str(curr_date) == i[0]:
                     show_lesson_to_bot(i, call)
 
         elif call.data == 'tomorrow':
@@ -106,3 +179,5 @@ def about_tex(message):
 
 
 bot.polling(none_stop=True)
+current_date = datetime.datetime.now()
+print(current_date)
