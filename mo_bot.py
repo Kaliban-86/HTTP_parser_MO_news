@@ -4,8 +4,9 @@ from bs4 import BeautifulSoup as bs
 import requests
 import sqlite3
 import datetime
+import os
 
-
+# from config import TOKEN
 
 conn = sqlite3.connect('studies.db')
 
@@ -43,6 +44,7 @@ def concat_lesson(first_lessons, second_lessons, third_lesson):
 
     return res_lessons
 
+
 all_lessons = concat_lesson(first_lesson_res, second_lesson_res, third_lesson_res)
 
 
@@ -77,11 +79,10 @@ def take_news_to_list():
     return news_list
 
 
-with open('token.txt', 'r') as f:
-    token = f.read()
-
-bot = telebot.TeleBot(token)
-id_list = [1201776385]
+#TOKEN = os.environ['TOKEN']
+TOKEN = os.environ.get('bot_token')
+bot = telebot.TeleBot(TOKEN)
+id_list = [1201776385, 629728192]
 
 
 @bot.message_handler(commands=['start'])
