@@ -22,11 +22,4 @@ def take_news_to_list():
         news_list.append(new_news)
 
     return news_list
-#apt -y install mo_bot.py npm screen
-
-# if __name__ == '__main__':
-#     # news_list = take_news_to_list()
-#     # for i in range(len(news_list)):
-#     #     print(news_list[i])
-#     #     print('-' * 70)
 
