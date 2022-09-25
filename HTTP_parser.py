@@ -23,12 +23,3 @@ def take_news_to_list():
 
     return news_list
 
-
-if __name__ == '__main__':
-    news_list = take_news_to_list()
-    for i in range(len(news_list)):
-        print(news_list[i])
-        print('-' * 70)
-#
-# with open('news_list.data', 'wb') as f:
-#    pickle.dump(news_list,f)
