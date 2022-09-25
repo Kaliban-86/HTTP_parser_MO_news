@@ -79,7 +79,7 @@ def take_news_to_list():
     return news_list
 
 
-#TOKEN = os.environ['TOKEN']
+
 TOKEN = os.environ.get('bot_token')
 bot = telebot.TeleBot(TOKEN)
 id_list = [1201776385, 629728192]
