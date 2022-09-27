@@ -5,6 +5,7 @@ import requests
 import sqlite3
 import datetime
 import os
+from ROM_DB import DayTimetable, save_data_to_db
 
 # from config import TOKEN
 
