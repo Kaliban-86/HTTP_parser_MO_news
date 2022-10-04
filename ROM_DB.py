@@ -62,7 +62,7 @@ def save_data_to_db(session_to, date_y, date_m, date_d, first_lesson, first_less
 my_date = datetime.datetime(2022, 9, 30)
 
 
-save_data_to_db(session, 2022, 10, 1, '10', 'L', 'T', 'GY', 'T', 'GY')
+#save_data_to_db(session, 2022, 10, 1, '10', 'L', 'T', 'GY', 'T', 'GY')
 days = session.query(DayTimetable).filter(DayTimetable.first_lesson == 'T').all()
 
 for day in days:
